@@ -2,18 +2,20 @@
   "name": "daily",
   "version": "0.1.0",
   "private": true,
-  "author": "zhaojj11",
   "description": "daily for note, plan",
-  "main": "./build/background.ts",
+  "author": "zhaojj11",
   "scripts": {
     "prestart": "vue-cli-service lint",
     "start": "vue-cli-service electron:serve",
-    "build": "vue-cli-service electron:build"
+    "build": "node script/deleteBuild && vue-cli-service electron:build"
   },
+  "main": "./build/background.ts",
   "dependencies": {
     "core-js": "^3.6.5",
-    "electron": "^13.1.8",
+    "electron": "^11.1.0",
+    "electron-builder": "^22.9.1",
     "electron-devtools-installer": "^3.2.0",
+    "style-resources-loader": "^1.4.1",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-cli-plugin-electron-builder": "^2.1.1",
@@ -37,7 +39,10 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "lint-staged": "^9.5.0",
-    "typescript": "~4.1.5"
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "typescript": "~4.1.5",
+    "vue-cli-plugin-style-resources-loader": "~0.1.5"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
