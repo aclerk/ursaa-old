@@ -1,21 +1,5 @@
 <template>
-  <el-container style="height: 100%">
-    <el-aside width="56px" style="border-color: black">
-      <div class="daily-menu">
-        <i class="el-icon-notebook-1 daily-icon" style="font-size: 30px" @click="clickFunc"></i>
-      </div>
-      <div style="height: 56px; width: 56px; line-height: 56px">
-        <i class="el-icon-setting" style="font-size: 30px" @click="clickFunc"></i>
-      </div>
-    </el-aside>
-    <el-main>
-      <router-view v-slot="{ Component }">
-        <keep-alive>
-          <component :is="Component" />
-        </keep-alive>
-      </router-view>
-    </el-main>
-  </el-container>
+  <div>main</div>
 </template>
 
 <script lang="ts">
@@ -39,12 +23,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped>
-.daily-menu {
-  height: 56px;
-  width: 56px;
-}
-.daily-icon {
-  line-height: 56px;
-}
-</style>
+<style lang="less" scoped></style>
