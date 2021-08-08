@@ -1,6 +1,7 @@
 import { app, BrowserWindow, protocol, globalShortcut, Menu } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
+import ipc from '@/main/event/ipc';
 import { browserWindowOption, shortcutsKeys } from '@/universal/config';
 import menuTemplate from '@/main/lifeCycle/menu';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -33,6 +34,7 @@ class LifeCycle {
   private static beforeReady() {
     // Scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([{ scheme: 'daily', privileges: { secure: true, standard: true } }]);
+    ipc.listen();
   }
   private onReady() {
     app.on('ready', async () => {
@@ -88,15 +90,6 @@ class LifeCycle {
   }
 
   launch() {
-    protocol.registerSchemesAsPrivileged([
-      {
-        scheme: 'app',
-        privileges: {
-          secure: true,
-          standard: true
-        }
-      }
-    ]);
     const gotTheLock = app.requestSingleInstanceLock();
     if (!gotTheLock) {
       app.quit();
