@@ -1,12 +1,11 @@
 <template>
   <el-container style="height: 100%">
-    <el-aside width="56px" style="background-color: #333333">
+    <el-aside width="57px" style="background-color: #333333">
       <router-link to="/" class="daily-router">
         <div class="daily-menu">
           <i class="el-icon-house daily-icon" style="font-size: 30px"></i>
         </div>
       </router-link>
-      <i class=""></i>
       <router-link to="/note" class="daily-router">
         <div class="daily-menu">
           <i class="el-icon-notebook-1 daily-icon" style="font-size: 30px"></i>
@@ -18,7 +17,7 @@
         </div>
       </router-link>
     </el-aside>
-    <el-main>
+    <el-main class="daily-container">
       <router-view v-slot="{ Component }">
         <keep-alive>
           <component :is="Component" />
@@ -41,5 +40,14 @@
 }
 .daily-router {
   color: #858585;
+}
+.daily-container {
+  padding: 0 !important;
+}
+.router-link-active .daily-menu {
+  border-left: 1px solid white;
+}
+.daily-router.router-link-active {
+  color: white;
 }
 </style>
