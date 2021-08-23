@@ -1,3 +1,4 @@
+import path from 'path';
 import { app, BrowserWindow, protocol, globalShortcut, Menu } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
@@ -20,7 +21,18 @@ class LifeCycle {
     } else {
       createProtocol('daily');
       // Load the index.html when not in development
-      mainWindow.loadURL('app://./index.html').then();
+      mainWindow.loadURL(`file://${__dirname}/index.html`).then();
+
+      // ===========自定义file:///协议的解析=======================
+      protocol.registerFileProtocol('app', (request, cb) => {
+        const url = request.url.replace('app://.', '');
+        // const decodedUrl = decodeURI(url);
+        try {
+          return cb({ path: path.normalize(`${__dirname}/${url}`) });
+        } catch (error) {
+          console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error);
+        }
+      });
     }
 
     const list = Menu.buildFromTemplate(menuTemplate);

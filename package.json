@@ -9,11 +9,10 @@
     "start": "vue-cli-service electron:serve",
     "build": "node script/deleteBuild && vue-cli-service electron:build"
   },
-  "main": "./build/background.ts",
+  "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.5",
     "electron": "^11.1.0",
-    "electron-builder": "^22.9.1",
     "electron-devtools-installer": "^3.2.0",
     "element-plus": "^1.0.2-beta.70",
     "style-resources-loader": "^1.4.1",

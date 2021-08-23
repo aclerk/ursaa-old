@@ -2,6 +2,16 @@
 const path = require('path');
 
 module.exports = {
+  publicPath: './',
+  pages: {
+    index: {
+      entry: 'src/main.ts',
+      template: 'public/index.html',
+      filename: 'index.html',
+      title: 'daily',
+      chunks: ['chunk-vendors', 'chunk-common', 'index']
+    }
+  },
   productionSourceMap: false,
   configureWebpack: (config) => {
     if (process.env.NODE_ENV !== 'development') {
@@ -23,17 +33,16 @@ module.exports = {
       builderOptions: {
         productName: 'daily',
         appId: 'com.pyjava.daily',
-        copyright: 'zhaojj11',
+        artifactName: '${productName}_${version}.${ext}',
+        copyright: 'Copyright © 2021 ${author}',
         compression: 'store', // "store" | "normal"| "maximum" 打包压缩情况(store 相对较快)，store 39749kb, maximum 39186kb
-        // directories: {
-        //   output: 'build' // 输出文件夹
-        // },
+        directories: {
+          output: './dist_electron' // 输出文件夹
+        },
+        // ------- windows 相关配置
         win: {
           // icon: 'xxx/icon.ico',
           target: ['nsis', 'zip']
-        },
-        mac: {
-          target: { target: 'dir', arch: 'arm64' }
         },
         nsis: {
           oneClick: false, // 一键安装

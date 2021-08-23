@@ -19,7 +19,8 @@ const browserWindowOption = () => {
     webPreferences: {
       enableRemoteModule: true,
       contextIsolation: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     }
   };
   return {
