@@ -6,6 +6,7 @@ import ipc from '@/main/event/ipc';
 import { browserWindowOption, shortcutsKeys } from '@/universal/config';
 import menuTemplate from '@/main/lifeCycle/menu';
 import db from '@/main/db';
+import createTray from '@/main/lifeCycle/tray';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let mainWindow: BrowserWindow | null;
 
@@ -68,6 +69,9 @@ class LifeCycle {
         globalShortcut.register(key, () => {});
       }
       this.createMainWindow();
+
+      // 创建托盘
+      createTray();
     });
   }
 
