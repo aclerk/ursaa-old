@@ -34,5 +34,4 @@ const browserWindowOption = () => {
  * 正式环境: file://${__dirname}/index.html
  */
 const winURL = globalEnv === 'development' ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
-
 export { browserWindowOption, winURL };

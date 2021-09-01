@@ -7,10 +7,13 @@
   "scripts": {
     "prestart": "vue-cli-service lint",
     "start": "vue-cli-service electron:serve",
-    "build": "node script/deleteBuild && vue-cli-service electron:build"
+    "build": "node script/deleteBuild && vue-cli-service electron:build",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "postinstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
+    "better-sqlite3": "^7.4.3",
     "core-js": "^3.6.5",
     "electron": "^11.1.0",
     "electron-devtools-installer": "^3.2.0",
@@ -22,6 +25,8 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.4.0",
+    "@types/sqlite3": "^3.1.7",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -32,6 +37,7 @@
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
+    "electron-rebuild": "^3.2.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",

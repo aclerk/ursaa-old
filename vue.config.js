@@ -23,6 +23,9 @@ module.exports = {
         drop_debugger: true,
         pure_funcs: ['console.log']
       };
+      config.externals = {
+        'better-sqlite3': 'commonjs better-sqlite3'
+      };
     }
   },
   pluginOptions: {
@@ -30,7 +33,13 @@ module.exports = {
     electronBuilder: {
       // 这里是在浏览器中使用node环境，需要为true
       nodeIntegration: true,
+      externals: ['better-sqlite3'],
       builderOptions: {
+        asar: false,
+        extraResources: {
+          from: './resource',
+          to: 'resource'
+        },
         productName: 'daily',
         appId: 'com.pyjava.daily',
         artifactName: '${productName}_${version}.${ext}',

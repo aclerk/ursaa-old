@@ -5,6 +5,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 import ipc from '@/main/event/ipc';
 import { browserWindowOption, shortcutsKeys } from '@/universal/config';
 import menuTemplate from '@/main/lifeCycle/menu';
+import db from '@/main/db';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let mainWindow: BrowserWindow | null;
 
@@ -42,7 +43,9 @@ class LifeCycle {
       mainWindow = null;
     });
   }
-
+  private initDb() {
+    db.initialDatabase().then();
+  }
   private static beforeReady() {
     // Scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([{ scheme: 'daily', privileges: { secure: true, standard: true } }]);
@@ -107,6 +110,7 @@ class LifeCycle {
       app.quit();
     } else {
       LifeCycle.beforeReady();
+      this.initDb();
       this.onReady();
       this.onRunning();
       this.onQuit();
