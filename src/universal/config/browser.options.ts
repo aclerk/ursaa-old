@@ -7,14 +7,15 @@ const editorWindowOptions = {
   width: devWid || 1000,
   height: devHei || 690,
   minWidth: 1000,
-  minHeight: 690
+  minHeight: 690,
+  show: false
 };
 
 /**
  * BrowserWindow的配置项
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const browserWindowOption = () => {
+const browserWindowOption = (frame = true) => {
   const commonOptions = {
     webPreferences: {
       enableRemoteModule: true,
@@ -25,6 +26,7 @@ const browserWindowOption = () => {
   };
   return {
     ...editorWindowOptions,
+    frame: frame,
     ...commonOptions
   };
 };

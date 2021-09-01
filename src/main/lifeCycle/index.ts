@@ -9,42 +9,58 @@ import db from '@/main/db';
 import createTray from '@/main/lifeCycle/tray';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let mainWindow: BrowserWindow | null;
+let loading: BrowserWindow | null;
 
 class LifeCycle {
   createMainWindow() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow(browserWindowOption());
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Load the url of the dev server if in development mode
-      mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL).then();
-      if (!process.env.IS_TEST) {
-        mainWindow.webContents.openDevTools();
-      }
-    } else {
-      createProtocol('daily');
-      // Load the index.html when not in development
-      mainWindow.loadURL(`file://${__dirname}/index.html`).then();
-
-      // ===========自定义file:///协议的解析=======================
-      protocol.registerFileProtocol('app', (request, cb) => {
-        const url = request.url.replace('app://.', '');
-        // const decodedUrl = decodeURI(url);
-        try {
-          return cb({ path: path.normalize(`${__dirname}/${url}`) });
-        } catch (error) {
-          console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error);
+    loading = new BrowserWindow(browserWindowOption(false));
+    loading.once('show', () => {
+      // Create the browser window.
+      mainWindow = new BrowserWindow(browserWindowOption());
+      mainWindow.webContents.once('dom-ready', () => {
+        if (mainWindow) {
+          mainWindow.show();
+        }
+        if (loading) {
+          loading.hide();
+          loading.close();
         }
       });
-    }
 
-    const list = Menu.buildFromTemplate(menuTemplate);
-    Menu.setApplicationMenu(list);
+      if (process.env.WEBPACK_DEV_SERVER_URL) {
+        // Load the url of the dev server if in development mode
+        mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL).then();
+        if (!process.env.IS_TEST) {
+          mainWindow.webContents.openDevTools();
+        }
+      } else {
+        createProtocol('daily');
+        // Load the index.html when not in development
+        mainWindow.loadURL(`file://${__dirname}/index.html`).then();
 
-    mainWindow.on('closed', () => {
-      mainWindow = null;
+        // ===========自定义file:///协议的解析=======================
+        protocol.registerFileProtocol('app', (request, cb) => {
+          const url = request.url.replace('app://.', '');
+          // const decodedUrl = decodeURI(url);
+          try {
+            return cb({ path: path.normalize(`${__dirname}/${url}`) });
+          } catch (error) {
+            console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error);
+          }
+        });
+      }
+
+      const list = Menu.buildFromTemplate(menuTemplate);
+      Menu.setApplicationMenu(list);
+
+      mainWindow.on('closed', () => {
+        mainWindow = null;
+      });
     });
+    loading.loadURL(path.join(process.cwd(), 'public', 'loading.html')).then();
+    loading.show();
   }
-  private initDb() {
+  private static initDb() {
     db.initialDatabase().then();
   }
   private static beforeReady() {
@@ -114,7 +130,7 @@ class LifeCycle {
       app.quit();
     } else {
       LifeCycle.beforeReady();
-      this.initDb();
+      LifeCycle.initDb();
       this.onReady();
       this.onRunning();
       this.onQuit();
