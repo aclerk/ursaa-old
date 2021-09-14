@@ -209,4 +209,132 @@ input:-webkit-autofill {
 input[type=number], input[type=password], input[type=text], textarea {
     -webkit-appearance: none
 }
+@font-face {
+    font-family: 'daily_editor';
+    src: url('../font/editor/editor.eot?52438661');
+    src: url('../font/editor/editor.eot?52438661#iefix') format('embedded-opentype'),
+    url('../font/editor/editor.woff?52438661') format('woff'),
+    url('../font/editor/editor.ttf?52438661') format('truetype'),
+    url('../font/editor/editor.svg?52438661#daily_editor') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+[class^="daily_editor_icon-"]:before, [class*="daily_editor_icon-"]:before {
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
 
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+
+    line-height: 1em;
+
+    /* Animation center compensation - margins should be symmetric */
+    margin-left: .2em;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.daily_editor_icon-instagram:before { content: '\e800'; } /* '' */
+.daily_editor_icon-minus:before { content: '\e801'; } /* '' */
+.daily_editor_icon-picture:before { content: '\e802'; } /* '' */
+.daily_editor_icon-minus-circled:before { content: '\e803'; } /* '' */
+.daily_editor_icon-cog:before { content: '\e804'; } /* '' */
+.daily_editor_icon-link:before { content: '\e805'; } /* '' */
+.daily_editor_icon-unlink:before { content: '\e806'; } /* '' */
+.daily_editor_icon-code:before { content: '\e807'; } /* '' */
+.daily_editor_icon-quote-right:before { content: '\e808'; } /* '' */
+.daily_editor_icon-comment:before { content: '\e809'; } /* '' */
+.daily_editor_icon-trash-empty:before { content: '\e80a'; } /* '' */
+.daily_editor_icon-down-open:before { content: '\e80b'; } /* '' */
+.daily_editor_icon-up-open:before { content: '\e80c'; } /* '' */
+.daily_editor_icon-up-big:before { content: '\e80d'; } /* '' */
+.daily_editor_icon-down-big:before { content: '\e80e'; } /* '' */
+.daily_editor_icon-header:before { content: '\e80f'; } /* '' */
+.daily_editor_icon-align-center:before { content: '\e810'; } /* '' */
+.daily_editor_icon-align-left:before { content: '\e811'; } /* '' */
+.daily_editor_icon-align-right:before { content: '\e812'; } /* '' */
+.daily_editor_icon-list:before { content: '\e813'; } /* '' */
+.daily_editor_icon-strike:before { content: '\e814'; } /* '' */
+.daily_editor_icon-underline:before { content: '\e815'; } /* '' */
+.daily_editor_icon-table:before { content: '\e816'; } /* '' */
+.daily_editor_icon-columns:before { content: '\e817'; } /* '' */
+.daily_editor_icon-bold:before { content: '\e818'; } /* '' */
+.daily_editor_icon-italic:before { content: '\e819'; } /* '' */
+.daily_editor_icon-smile:before { content: '\e81a'; } /* '' */
+.daily_editor_icon-twitter:before { content: '\e81b'; } /* '' */
+.daily_editor_icon-plus-1:before { content: '\e81c'; } /* '' */
+.daily_editor_icon-plus-circled-1:before { content: '\e81d'; } /* '' */
+.daily_editor_icon-quote:before { content: '\e81e'; } /* '' */
+.daily_editor_icon-code-1:before { content: '\e81f'; } /* '' */
+.daily_editor_icon-trash:before { content: '\e820'; } /* '' */
+.daily_editor_icon-list-add:before { content: '\e821'; } /* '' */
+.daily_editor_icon-list-1:before { content: '\e822'; } /* '' */
+
+
+
+/* EDITOR */
+.hidden {display: none !important;}
+.hidden_file {position: absolute; opacity: 0; z-index: -1; left:-99999px; }
+
+.daily_editor button{
+    border: 0;
+    outline: none;
+    background: transparent;
+}
+.daily_editor [contenteditable]{
+    outline: none;
+}
+
+.daily_editor .node{
+    position: relative;
+}
+
+.daily_editor .add_buttons{
+    position: relative;
+    color: #3b4352;
+    font-size: 16px;
+}
+.daily_editor .add_buttons button:hover,
+.daily_editor .add_buttons .focused{
+    color: #3770ef;
+}
+.daily_editor .add_buttons button{
+    transition: all 150ms ease-in;
+    transform: translate3d(-50px, 0 , 0);
+    opacity: 0;
+    font-size: 14px;
+    /*display: none;*/
+}
+.daily_editor .buttons_toggled{
+    background: #fff;
+}
+.daily_editor .buttons_toggled button{
+    opacity: 1;
+    transform: translate3d(0,0,0);
+}
+
+
+.daily_editor .toggler{
+    position: absolute;
+    left: -42px;
+    display: inline-block;
+    font-size: 23px;
+    color: #387ff5;
+    transition: transform 100ms ease-in;
+}
+.daily_editor .buttons_toggled .toggler{
+    transform: rotate(45deg);
+}
+
+/** Typography styles */
+.daily_editor p{
+    margin: 30px 0;
+    font-size: 17px;
+}

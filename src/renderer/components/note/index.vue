@@ -4,7 +4,7 @@
       <note-sidebar class="pane pane-left"></note-sidebar>
     </template>
     <template v-slot:two>
-      <note-edit-content class="pane pane-right"></note-edit-content>
+      <note-edit-content :value="value" class="pane pane-right"></note-edit-content>
     </template>
   </split-pane>
 </template>
@@ -26,7 +26,8 @@ export default defineComponent({
   },
   data() {
     return {
-      paneLengthPercent: 20
+      paneLengthPercent: 20,
+      value: ['# h1', '## h2', '### h3', 'hello']
     };
   }
 });

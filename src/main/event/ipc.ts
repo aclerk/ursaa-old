@@ -27,6 +27,18 @@ export default {
       }
     });
 
+    // 数据修改
+    ipcMain.on('data-change', (event, args) => {
+      console.log('ipc:' + args);
+      return args;
+    });
+
+    // 数据查询
+    ipcMain.on('data-query', (data, args) => {
+      console.log('ipc:' + args);
+      return args;
+    });
+
     return;
   }
 };

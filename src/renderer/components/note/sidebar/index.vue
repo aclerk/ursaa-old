@@ -1,5 +1,7 @@
 <template>
-  <div>{{ this.myName }}</div>
+  <div>
+    <el-skeleton :rows="5" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,15 +10,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'note-sidebar',
   setup() {
-    const name = 'test';
-    return {
-      name
-    };
+    return {};
   },
   data() {
-    return {
-      myName: 'test'
-    };
+    return {};
   }
 });
 </script>
