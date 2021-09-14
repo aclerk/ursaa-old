@@ -220,7 +220,7 @@ input[type=number], input[type=password], input[type=text], textarea {
     font-style: normal;
 }
 [class^="daily_editor_icon-"]:before, [class*="daily_editor_icon-"]:before {
-    font-family: 'daily_editor';
+    font-family: 'daily_editor', serif;
     font-style: normal;
     font-weight: normal;
     speak: none;
@@ -283,6 +283,11 @@ input[type=number], input[type=password], input[type=text], textarea {
 /* EDITOR */
 .hidden {display: none !important;}
 .hidden_file {position: absolute; opacity: 0; z-index: -1; left:-99999px; }
+
+.daily_editor{
+    padding: 10px 30px;
+    overflow-x: auto;
+}
 
 .daily_editor button{
     border: 0;

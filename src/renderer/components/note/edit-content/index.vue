@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <textarea name="" id="html_result" cols="30" rows="10"></textarea>
+  <div style="height: 100%; overflow: auto">
+    <textarea name="" id="daily_editor" cols="30" rows="10"></textarea>
   </div>
 </template>
 
@@ -14,11 +14,13 @@ export default {
   props: {
     value: {
       type: Array,
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       default: () => {
         return [];
       }
     }
   },
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   mounted() {
     let obj = {
       type: RequestTypeEnum.query,
@@ -27,8 +29,9 @@ export default {
       }
     };
     ipcRenderer.send('data-query', obj);
-    window.editor = new Editor('html_result');
+    window.editor = new Editor({ tools: ['header', 'picture'] });
   },
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   data() {
     return {
       content: [],
@@ -38,12 +41,4 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
-#markdown {
-  height: 100%;
-  box-sizing: border-box;
-}
-#markdown:focus {
-  outline: none;
-}
-</style>
+<style scoped lang="less"></style>

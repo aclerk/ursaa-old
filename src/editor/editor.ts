@@ -1,36 +1,48 @@
-const key = {
-  TAB: 9,
-  ENTER: 13,
-  BACKSPACE: 8,
-  DELETE: 46,
-  DOWN: 40,
-  SPACE: 32,
-  ESC: 27,
-  CTRL: 17,
-  META: 91,
-  SHIFT: 16,
-  ALT: 18
-};
-
-const BUTTONS_TOGGLED_CLASSNAME = 'buttons_toggled';
-
 export default class Editor {
+  static key = {
+    TAB: 9,
+    ENTER: 13,
+    BACKSPACE: 8,
+    DELETE: 46,
+    DOWN: 40,
+    SPACE: 32,
+    ESC: 27,
+    CTRL: 17,
+    META: 91,
+    SHIFT: 16,
+    ALT: 18
+  };
+  public textAreaId = 'daily_editor';
   public resultTextarea: HTMLElement | null;
   public toolbarOpened: boolean | undefined;
-  public BUTTONS_TOGGLED_CLASSNAME: string | undefined;
-  public tools: string[] | undefined;
+  public allTools = ['header', 'picture', 'list', 'quote', 'code', 'twitter', 'instagram', 'smile'];
+  public settings!: Record<string, any>;
 
-  constructor(textAreaId: string) {
-    this.resultTextarea = document.getElementById(textAreaId);
+  // HTMLElement
+  public wrapper = Editor.createEditorWrapper();
+
+  constructor(settings: Record<string, any>) {
+    this.resultTextarea = document.getElementById(this.textAreaId);
     if (typeof this.resultTextarea == undefined || this.resultTextarea == null) {
-      console.warn('Textarea not found with ID %o', textAreaId);
+      console.warn('Textarea not found with ID %o', this.textAreaId);
       return this;
     }
 
-    this.toolbarOpened = false;
-    this.tools = ['header', 'picture', 'list', 'quote', 'code', 'twitter', 'instagram', 'smile'];
+    // 默认配置 settings
+    const defaultSettings = {};
+
+    if ('undefined' === typeof settings || 'object' != typeof settings) {
+      settings = defaultSettings;
+    } else {
+      // todo merge setttings with defaults
+    }
+    if ('undefined' == typeof settings.tools || !Array.isArray(settings.tools)) {
+      settings.tools = this.allTools;
+    }
+    this.settings = settings;
 
     /** Some configurations */
+    this.toolbarOpened = false;
 
     /** Making a wrapper and interface */
     this.makeInterface();
@@ -40,32 +52,16 @@ export default class Editor {
   }
 
   private makeInterface() {
-    const wrapper = this.createEditorWrapper();
-    const firstNode = this.createNode(
-      '',
+    const firstNode = Editor.createTextNode(
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro quia nihil repellendus aut cupiditate reprehenderit sapiente magnam nobis doloremque eaque! Sint nobis assumenda nisi ducimus minima illo tenetur, cumque facilis.'
     );
-    const toolbar = this.createToolbar();
-    let button;
-    if (this.tools) {
-      for (let i = 0; i < this.tools.length; i++) {
-        button = this.createToolbarButton(this.tools[i]);
-        toolbar.appendChild(button);
-      }
-    }
-
-    /**
-     * Add toolbar to node
-     * @todo make toolbar rendering once
-     */
-    firstNode.appendChild(toolbar);
 
     /** Add first node */
-    wrapper.appendChild(firstNode);
+    this.wrapper.appendChild(firstNode);
 
     /** Insert Editor after initial textarea. Hide textarea */
     if (this.resultTextarea && this.resultTextarea.parentNode) {
-      this.resultTextarea.parentNode.insertBefore(wrapper, this.resultTextarea.nextSibling);
+      this.resultTextarea.parentNode.insertBefore(this.wrapper, this.resultTextarea.nextSibling);
       this.resultTextarea.hidden = true;
     }
 
@@ -74,7 +70,7 @@ export default class Editor {
     contentEditable.length && (contentEditable[0] as HTMLElement).focus();
   }
 
-  public bindEvents() {
+  public bindEvents(): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
 
@@ -90,56 +86,29 @@ export default class Editor {
 
   private globalKeydownCallback(event: any) {
     switch (event.keyCode) {
-      case key.TAB:
-        this.tabKeyPressed(event);
-        break; // TAB
-      case key.ENTER:
+      case Editor.key.ENTER:
         this.enterKeyPressed(event);
         break; // Enter
     }
   }
 
-  private tabKeyPressed(event: any) {
-    const toolbar = document.getElementsByClassName('add_buttons');
+  private enterKeyPressed(event: any) {
+    const newNode = Editor.createTextNode();
 
-    if (!toolbar[0].className.includes(BUTTONS_TOGGLED_CLASSNAME)) {
-      toolbar[0].className = toolbar[0].className.trim() + ' ' + BUTTONS_TOGGLED_CLASSNAME;
-      this.toolbarOpened = true;
-    } else {
-      toolbar[0].className = toolbar[0].className.replace(BUTTONS_TOGGLED_CLASSNAME, '');
-      this.toolbarOpened = false;
-    }
+    this.wrapper.insertBefore(newNode, event.target.parentNode.nextSibling);
+
+    /** Set auto focus */
+    const contentEditable = newNode.getElementsByClassName('ce_node_content');
+    contentEditable.length && (contentEditable[0] as HTMLElement).focus();
 
     event.preventDefault();
-  }
-
-  private enterKeyPressed(event: any) {
-    console.log('enter');
-  }
-
-  /** Empty toolbar with toggler */
-  private createToolbar() {
-    const bar = document.createElement('div');
-    bar.className += 'add_buttons';
-    /** Toggler button*/
-    bar.innerHTML = '<span class="toggler">' + '<i class="daily_editor_icon-plus-circled-1"></i>' + '</span>';
-    return bar;
-  }
-
-  private createToolbarButton(type: string) {
-    const button = document.createElement('button');
-
-    button.dataset.type = type;
-    button.innerHTML = '<i class="daily_editor_icon-' + type + '"></i>';
-
-    return button;
   }
 
   /**
    * Paragraph node
    * @todo set unique id with prefix
    */
-  private createNode(id: string, content: string) {
+  private static createTextNode(content = ''): HTMLElement {
     const node = document.createElement('div');
 
     node.className += 'node';
@@ -148,7 +117,7 @@ export default class Editor {
     return node;
   }
 
-  private createEditorWrapper() {
+  private static createEditorWrapper(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.className += 'daily_editor';
     return wrapper;
