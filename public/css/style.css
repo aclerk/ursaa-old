@@ -285,8 +285,7 @@ input[type=number], input[type=password], input[type=text], textarea {
 .hidden_file {position: absolute; opacity: 0; z-index: -1; left:-99999px; }
 
 .daily_editor{
-    padding: 10px 30px;
-    overflow-x: auto;
+    padding: 10px 40px;
 }
 
 .daily_editor button{
@@ -303,10 +302,19 @@ input[type=number], input[type=password], input[type=text], textarea {
 }
 
 .daily_editor .add_buttons{
-    position: relative;
     color: #3b4352;
     font-size: 16px;
+    margin-left: -42px;
+    margin-top: -30px;
+    margin-bottom: -25px;
+    position: relative;
 }
+
+.add_buttons .buttons {
+    position: absolute;
+    top: 3px;
+}
+
 .daily_editor .add_buttons button:hover,
 .daily_editor .add_buttons .focused{
     color: #3770ef;
@@ -316,10 +324,10 @@ input[type=number], input[type=password], input[type=text], textarea {
     transform: translate3d(-50px, 0 , 0);
     opacity: 0;
     font-size: 14px;
-    /*display: none;*/
 }
 .daily_editor .buttons_toggled{
     background: #fff;
+    z-index: 10;
 }
 .daily_editor .buttons_toggled button{
     opacity: 1;
@@ -328,8 +336,6 @@ input[type=number], input[type=password], input[type=text], textarea {
 
 
 .daily_editor .toggler{
-    position: absolute;
-    left: -42px;
     display: inline-block;
     font-size: 23px;
     color: #387ff5;
