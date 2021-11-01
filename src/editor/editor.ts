@@ -24,6 +24,7 @@ export default class Editor {
   /** 编辑器包装类 */
   public wrapper = Editor.createEditorWrapper();
   public toolbarButtons!: HTMLElement;
+  public editableWrapper!: Element;
 
   constructor(settings: Record<string, any>) {
     this.resultTextarea = document.getElementById(Editor.textAreaId);
@@ -55,11 +56,13 @@ export default class Editor {
     const firstNode = Editor.createTextNode(
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro quia nihil repellendus aut cupiditate reprehenderit sapiente magnam nobis doloremque eaque! Sint nobis assumenda nisi ducimus minima illo tenetur, cumque facilis.'
     );
-    this.toolbarButtons = this.createToolbarButtons();
+    this.toolbarButtons = this.createToolbarButtons(this.allTools, this.settings.tools);
     const toolbar = Editor.createToolbar();
-    console.log(toolbar);
+    let editableWrapper;
+    this.editableWrapper = editableWrapper = this.wrapper.getElementsByClassName('daily_editor_content')[0];
+
     /** 添加第一个文本节点 */
-    this.wrapper.appendChild(firstNode);
+    editableWrapper.appendChild(firstNode);
 
     /** 创建toolbar */
     this.wrapper.appendChild(toolbar);
@@ -77,12 +80,27 @@ export default class Editor {
   public bindEvents(): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
+    const selectedNodeClass = 'selected';
 
     /** All keydowns on Window */
-    window.addEventListener(
+    document.addEventListener(
       'keydown',
       function (event) {
         that.globalKeydownCallback(event);
+      },
+      false
+    );
+
+    /** All blur on Window */
+    document.addEventListener(
+      'focus',
+      function (event) {
+        console.log(event);
+        if (event.target) {
+          // check if currently focused in contenteditable element
+          if ('BODY' == (event.target as HTMLParagraphElement).tagName) return;
+          (event.target as HTMLParagraphElement).classList.add(selectedNodeClass);
+        }
       },
       false
     );
@@ -94,7 +112,7 @@ export default class Editor {
         this.tabKeyPressed(event);
         break; // TAB
       case Editor.key.ENTER:
-        this.enterKeyPressed(event);
+        Editor.enterKeyPressed(event);
         break; // Enter
     }
   }
@@ -102,8 +120,16 @@ export default class Editor {
   private tabKeyPressed(event: any) {
     // check if currently focused in contenteditable element
     if ('BODY' === event.target.tagName) return;
-    const toolbar = event.target.parentNode.nextSibling;
+    const toolbar = event.target.nextSibling;
     toolbar.appendChild(this.toolbarButtons);
+
+    const sel = window.getSelection();
+    const curNode = (sel?.anchorNode as HTMLElement).tagName
+      ? sel?.anchorNode
+      : (sel?.focusNode as HTMLElement).parentElement;
+
+    // debugger
+    toolbar.style.top = (curNode as HTMLElement).offsetTop + 'px';
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
@@ -120,41 +146,67 @@ export default class Editor {
     event.preventDefault();
   }
 
-  private enterKeyPressed(event: any) {
-    const newNode = Editor.createTextNode();
-    const toolbar = Editor.createToolbar();
-
-    this.wrapper.insertBefore(newNode, event.target.parentNode.nextSibling);
-
-    this.wrapper.insertBefore(toolbar, newNode);
-
-    /** 自动focus */
-    Editor.focusNode(newNode);
-
-    event.preventDefault();
+  private static enterKeyPressed(event: any) {
+    console.log(event);
+    // const newNode = Editor.createTextNode();
+    // const toolbar = Editor.createToolbar();
+    //
+    // this.wrapper.insertBefore(newNode, event.target.parentNode.nextSibling);
+    //
+    // this.wrapper.insertBefore(toolbar, newNode);
+    //
+    // /** 自动focus */
+    // Editor.focusNode(newNode);
+    //
+    // event.preventDefault();
   }
 
   /**
    * 创建文本节点
    */
   private static createTextNode(content = ''): HTMLElement {
-    const node = document.createElement('div');
-
-    node.className += 'node';
-    node.innerHTML = '<p class="daily_editor_node_content" contenteditable="true">' + (content || '') + '</p>';
+    const node = document.createElement('p');
+    node.classList.add('node');
+    node.classList.add('daily_editor_node_content');
+    node.setAttribute('contenteditable', 'true');
+    node.innerHTML = content || '';
 
     return node;
   }
 
   private static createEditorWrapper(): HTMLElement {
     const wrapper = document.createElement('div');
+    const editable_wrapper = document.createElement('div');
+
+    editable_wrapper.classList.add('daily_editor_content');
+    editable_wrapper.setAttribute('contenteditable', 'true');
+
     wrapper.className += 'daily_editor';
+    wrapper.appendChild(editable_wrapper);
+
     return wrapper;
   }
 
   private static focusNode(node: HTMLElement): void {
-    const contentEditable = node.getElementsByClassName('daily_editor_node_content');
-    contentEditable.length && (contentEditable[0] as HTMLElement).focus();
+    // const contentEditable = node.getElementsByClassName('daily_editor_node_content');
+    // contentEditable.length && (contentEditable[0] as HTMLElement).focus();
+
+    node.focus();
+    if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      range.collapse(false);
+
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+    // else if (typeof document.body.createTextRange != 'undefined') {
+    // const textRange = document.body.createTextRange();
+    // textRange.moveToElementText(node);
+    // textRange.collapse(false);
+    // textRange.select();
+    // }
   }
 
   /**
@@ -188,20 +240,16 @@ export default class Editor {
    * 创建所有toolbar 按钮
    * @private
    */
-  private createToolbarButtons() {
+  private createToolbarButtons(allTools: string[], usedTools: string[]) {
     const toolbarButtons = document.createElement('span');
+
     toolbarButtons.classList.add('buttons');
 
-    for (let i = 0; i < this.allTools.length; i++) {
-      const tool = this.allTools[i];
+    // Walk base buttons list - save buttons origin sorting
+    allTools.forEach((item) => {
+      if (usedTools.indexOf(item) >= 0) toolbarButtons.appendChild(Editor.createToolbarButton(item));
+    }, this);
 
-      if (this.settings.tools.indexOf(tool) < 0) {
-        continue;
-      }
-
-      const button = Editor.createToolbarButton(tool);
-      toolbarButtons.appendChild(button);
-    }
     return toolbarButtons;
   }
 }
